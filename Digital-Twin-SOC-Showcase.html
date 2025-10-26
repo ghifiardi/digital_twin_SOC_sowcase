@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin AI Driven SOC - Executive Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.9); }
+        }
+        
+        @keyframes threat-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        @keyframes ai-thinking {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes response-pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .threat-pulse {
+            animation: threat-pulse 1.5s ease-in-out infinite;
+        }
+        
+        .ai-thinking {
+            animation: ai-thinking 1s ease-in-out infinite;
+        }
+        
+        .network-node {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .network-node:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+        
+        .threat-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: threat-pulse 1s ease-in-out infinite;
+            top: -6px;
+            right: -6px;
+        }
+        
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            border-color: rgba(59, 130, 246, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+        
+        .agent-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .agent-card.active {
+            border-color: rgba(34, 197, 94, 0.8);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+            transform: scale(1.02);
+        }
+        
+        .agent-card:hover {
+            transform: scale(1.05);
+            border-color: rgba(59, 130, 246, 0.7);
+        }
+        
+        .threat-timeline {
+            position: relative;
+            height: 8px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .threat-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #f97316 50%, #eab308 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .network-topology {
+            position: relative;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 400px;
+        }
+        
+        .scroll-container {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 4px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 4px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+        
+        .attack-scenario {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 101, 101, 0.15) 100%);
+            border-left: 6px solid rgba(239, 68, 68, 0.6);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .attack-scenario.active {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(245, 101, 101, 0.25) 100%);
+            border-left-color: rgba(239, 68, 68, 0.9);
+            transform: scale(1.02);
+        }
+        
+        .response-action {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(74, 222, 128, 0.15) 100%);
+            border-left: 6px solid rgba(34, 197, 94, 0.6);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+        
+        .digital-twin-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+            border: 3px solid rgba(139, 92, 246, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .simulation-controls {
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .explanation-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active { background: #22c55e; }
+        .status-threatened { background: #f59e0b; }
+        .status-compromised { background: #ef4444; }
+        .status-isolated { background: #8b5cf6; }
+        
+        .big-text { font-size: 1.5rem; font-weight: bold; }
+        .medium-text { font-size: 1.1rem; }
+        .small-text { font-size: 0.9rem; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(74, 222, 128, 0.1) 100%);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="w-full min-h-screen flex flex-col overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-b from-slate-900 to-transparent p-6 border-b border-slate-700/30 z-20">
+            <div class="flex justify-between items-center max-w-full px-8">
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2">🔮 Digital Twin AI Driven SOC</h1>
+                    <p class="text-slate-300 text-lg">Interactive Cybersecurity Simulation & Autonomous Response</p>
+                    <p class="text-slate-400 text-sm mt-1">Revolutionizing Security Operations with AI-Powered Intelligence</p>
+                </div>
+                <div class="flex gap-6 items-center">
+                    <div class="text-right">
+                        <div class="text-sm text-slate-400">System Status</div>
+                        <div class="text-2xl font-bold text-green-400" id="systemStatus">ACTIVE</div>
+                        <div class="text-xs text-slate-500">All AI Agents Online</div>
+                    </div>
+                    <button id="startSimulation" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg">
+                        🚀 Start Live Demo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Explanation Box -->
+        <div class="explanation-box mx-6 mt-4">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">💡</span>
+                <span class="text-xl font-bold text-white">What You're About to See</span>
+            </div>
+            <div class="text-slate-200 text-lg leading-relaxed">
+                This is a <strong class="text-blue-400">Digital Twin SOC</strong> - an AI-powered security operations center that learns from simulated attacks to automatically defend your real network. 
+                Watch as our three AI agents work together to detect threats, analyze patterns, and execute automated responses in real-time.
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="flex-1 flex gap-6 p-6 overflow-hidden">
+            <!-- Left Panel: Digital Twin & Network (40%) -->
+            <div class="w-2/5 flex flex-col gap-6 overflow-hidden">
+                <!-- Digital Twin Status -->
+                <div class="digital-twin-panel">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🔮</span>
+                        <span class="text-xl font-bold text-white">Digital Twin Environment</span>
+                        <div class="ml-auto w-4 h-4 bg-green-400 rounded-full pulse-glow"></div>
+                    </div>
+                    <div class="space-y-3 text-base">
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Scenarios Simulated:</span>
+                            <span class="text-white font-bold text-lg" id="scenariosSimulated">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Success Rate:</span>
+                            <span class="text-green-400 font-bold text-lg" id="successRate">99.2%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Avg Response Time:</span>
+                            <span class="text-blue-400 font-bold text-lg" id="avgResponseTime">8.3s</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-800/50 rounded-lg">
+                        <div class="text-sm text-slate-400 mb-1">What is a Digital Twin?</div>
+                        <div class="text-sm text-slate-200">A safe copy of your network where we test 10,000+ attack scenarios to train our AI agents before they defend your real systems.</div>
+                    </div>
+                </div>
+
+                <!-- Network Topology -->
+                <div class="network-topology">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🌐</span>
+                        <span class="text-xl font-bold text-white">Your Network Infrastructure</span>
+                    </div>
+                    <div class="relative w-full h-80" id="networkCanvas">
+                        <!-- Network nodes will be dynamically generated -->
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-800/50 rounded-lg">
+                        <div class="text-sm text-slate-400 mb-2">Legend:</div>
+                        <div class="flex flex-wrap gap-3 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="status-indicator status-active"></span>
+                                <span class="text-slate-200">Active</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="status-indicator status-threatened"></span>
+                                <span class="text-slate-200">Under Attack</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="status-indicator status-compromised"></span>
+                                <span class="text-slate-200">Compromised</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="status-indicator status-isolated"></span>
+                                <span class="text-slate-200">Isolated</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack Scenarios -->
+                <div class="bg-slate-950 border-2 border-slate-700 rounded-xl p-6 flex-1 flex flex-col overflow-hidden">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-700">
+                        <span class="text-3xl">⚡</span>
+                        <span class="text-xl font-bold text-white">Active Attack Scenarios</span>
+                    </div>
+                    <div id="attackScenarios" class="flex-1 scroll-container space-y-3">
+                        <!-- Attack scenarios will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel: AI Agents & Reasoning (35%) -->
+            <div class="w-2/5 flex flex-col gap-6 overflow-hidden">
+                <!-- AI Agents Status -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div id="agentADA" class="agent-card active p-4 rounded-xl">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-2xl">🛡️</span>
+                            <span class="text-lg font-bold text-white">ADA</span>
+                        </div>
+                        <div class="text-sm text-slate-400 mb-2">Adaptive Defense Agent</div>
+                        <div class="text-sm text-green-400 font-bold mb-3">ACTIVE</div>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>Confidence: <span class="text-white font-semibold">98.7%</span></div>
+                            <div>Actions: <span class="text-white font-semibold">1,247</span></div>
+                        </div>
+                        <div class="mt-3 text-xs text-slate-400">Automatically detects and contains threats</div>
+                    </div>
+                    <div id="agentTAA" class="agent-card p-4 rounded-xl">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-2xl">🧠</span>
+                            <span class="text-lg font-bold text-white">TAA</span>
+                        </div>
+                        <div class="text-sm text-slate-400 mb-2">Threat Analysis Agent</div>
+                        <div class="text-sm text-blue-400 font-bold mb-3">ANALYZING</div>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>Accuracy: <span class="text-white font-semibold">94.2%</span></div>
+                            <div>Predictions: <span class="text-white font-semibold">892</span></div>
+                        </div>
+                        <div class="mt-3 text-xs text-slate-400">Predicts attack patterns and next moves</div>
+                    </div>
+                    <div id="agentCRA" class="agent-card p-4 rounded-xl">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-2xl">✓</span>
+                            <span class="text-lg font-bold text-white">CRA</span>
+                        </div>
+                        <div class="text-sm text-slate-400 mb-2">Compliance Agent</div>
+                        <div class="text-sm text-purple-400 font-bold mb-3">MONITORING</div>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>Compliance: <span class="text-white font-semibold">95.8%</span></div>
+                            <div>Audits: <span class="text-white font-semibold">156</span></div>
+                        </div>
+                        <div class="mt-3 text-xs text-slate-400">Ensures all actions meet compliance requirements</div>
+                    </div>
+                </div>
+
+                <!-- AI Reasoning Panel -->
+                <div class="bg-slate-950 border-2 border-slate-700 rounded-xl p-6 flex-1 flex flex-col overflow-hidden">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-700">
+                        <span class="text-3xl">💭</span>
+                        <span class="text-xl font-bold text-white">AI Reasoning Engine</span>
+                        <div class="ml-auto ai-thinking text-xl">🤖</div>
+                    </div>
+                    <div class="mb-4 p-3 bg-slate-800/50 rounded-lg">
+                        <div class="text-sm text-slate-400 mb-1">Currently Active Agent:</div>
+                        <div class="text-lg font-bold text-blue-400" id="currentAgentName">ADA - Adaptive Defense Agent</div>
+                        <div class="text-sm text-slate-300">Click on agent cards above to see different AI reasoning processes</div>
+                    </div>
+                    <div id="aiReasoning" class="flex-1 scroll-container space-y-4">
+                        <!-- AI reasoning will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Response Actions -->
+                <div class="bg-slate-950 border-2 border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-700">
+                        <span class="text-3xl">⚡</span>
+                        <span class="text-xl font-bold text-white">Automated Responses</span>
+                    </div>
+                    <div id="responseActions" class="space-y-3">
+                        <!-- Response actions will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Metrics & Controls (25%) -->
+            <div class="w-1/5 flex flex-col gap-6 overflow-hidden">
+                <!-- Key Metrics -->
+                <div class="space-y-4">
+                    <div class="metric-card p-4 rounded-xl">
+                        <div class="text-sm text-slate-400 mb-2">Mean Time To Response</div>
+                        <div class="text-3xl font-bold text-white" id="mttrValue">8.3</div>
+                        <div class="text-sm text-green-400 font-semibold">minutes</div>
+                        <div class="mt-3 w-full h-2 bg-slate-700 rounded-full">
+                            <div class="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full" style="width: 73%"></div>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">73% faster than traditional SOC</div>
+                    </div>
+                    <div class="metric-card p-4 rounded-xl">
+                        <div class="text-sm text-slate-400 mb-2">False Positives</div>
+                        <div class="text-3xl font-bold text-white" id="falsePositives">9.2</div>
+                        <div class="text-sm text-blue-400 font-semibold">%</div>
+                        <div class="mt-3 w-full h-2 bg-slate-700 rounded-full">
+                            <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style="width: 22%"></div>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">78% reduction from baseline</div>
+                    </div>
+                    <div class="metric-card p-4 rounded-xl">
+                        <div class="text-sm text-slate-400 mb-2">Threats Blocked</div>
+                        <div class="text-3xl font-bold text-white" id="threatsBlocked">1,247</div>
+                        <div class="text-sm text-green-400 font-semibold">today</div>
+                        <div class="mt-3 w-full h-2 bg-slate-700 rounded-full">
+                            <div class="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full" style="width: 95%"></div>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">99.2% success rate</div>
+                    </div>
+                    <div class="metric-card p-4 rounded-xl">
+                        <div class="text-sm text-slate-400 mb-2">Compliance Score</div>
+                        <div class="text-3xl font-bold text-white" id="compliance">95.8</div>
+                        <div class="text-sm text-purple-400 font-semibold">%</div>
+                        <div class="mt-3 w-full h-2 bg-slate-700 rounded-full">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" style="width: 96%"></div>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">Exceeds regulatory requirements</div>
+                    </div>
+                </div>
+
+                <!-- Real-time Activity Log -->
+                <div class="bg-slate-950 border-2 border-slate-700 rounded-xl p-6 flex-1 flex flex-col overflow-hidden">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-700">
+                        <span class="text-2xl">📊</span>
+                        <span class="text-lg font-bold text-white">Live Activity</span>
+                        <div class="ml-auto w-3 h-3 bg-green-400 rounded-full pulse-glow"></div>
+                    </div>
+                    <div id="activityLog" class="flex-1 scroll-container space-y-2">
+                        <!-- Activity log will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="simulation-controls">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-2xl">🎮</span>
+                        <span class="text-lg font-bold text-white">Demo Controls</span>
+                    </div>
+                    
+                    <!-- Demo Mode Selection -->
+                    <div class="mb-4 p-3 bg-slate-800/50 rounded-lg">
+                        <div class="text-sm text-slate-400 mb-2">Demo Mode</div>
+                        <div class="flex gap-2">
+                            <button id="autoMode" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold transition">
+                                🤖 Auto
+                            </button>
+                            <button id="manualMode" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold transition">
+                                👆 Manual
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-2">
+                            <span id="modeDescription">Auto: Runs automatically | Manual: Click to advance</span>
+                        </div>
+                    </div>
+
+                    <!-- Manual Controls (hidden by default) -->
+                    <div id="manualControls" class="space-y-3 hidden">
+                        <div class="text-sm text-slate-400 mb-2">Manual Demo Steps</div>
+                        <div class="space-y-2">
+                            <button id="nextStep" class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+                                ➡️ Next Step
+                            </button>
+                            <button id="prevStep" class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition">
+                                ⬅️ Previous Step
+                            </button>
+                            <button id="triggerAttack" class="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition">
+                                ⚡ Trigger Attack
+                            </button>
+                            <button id="showResponse" class="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold transition">
+                                🛡️ Show Response
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-2">
+                            Step <span id="currentStep">1</span> of <span id="totalSteps">8</span>
+                        </div>
+                    </div>
+
+                    <!-- Auto Controls -->
+                    <div id="autoControls" class="space-y-4">
+                        <div>
+                            <label class="text-sm text-slate-400 mb-2 block">Attack Intensity</label>
+                            <input type="range" id="attackIntensity" min="1" max="10" value="5" 
+                                   class="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                <span>Low</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-400 mb-2 block">Demo Speed</label>
+                            <select id="responseSpeed" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white">
+                                <option value="slow">Slow (Realistic)</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="fast">Fast (Demo)</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="pauseSimulation" class="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition">
+                                ⏸ Pause
+                            </button>
+                            <button id="resetSimulation" class="flex-1 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-semibold transition">
+                                🔄 Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Status Bar -->
+        <div class="bg-gradient-to-t from-slate-900 to-transparent p-4 text-center border-t border-slate-700">
+            <div class="flex justify-center items-center gap-6">
+                <div class="text-center">
+                    <div class="text-sm text-slate-400">Total Scenarios</div>
+                    <div class="text-xl font-bold text-white" id="totalScenarios">0</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-slate-400">AI Decisions</div>
+                    <div class="text-xl font-bold text-white" id="aiDecisions">0</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-slate-400">Responses Executed</div>
+                    <div class="text-xl font-bold text-white" id="responsesExecuted">0</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-slate-400">Uptime</div>
+                    <div class="text-xl font-bold text-white" id="uptime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Digital Twin SOC Simulation Engine - Audience-Friendly Version with Manual Demo Mode
+        class DigitalTwinSOC {
+            constructor() {
+                this.isRunning = false;
+                this.isManualMode = false;
+                this.currentStep = 1;
+                this.totalSteps = 8;
+                this.attackScenarios = [];
+                this.networkNodes = [];
+                this.aiReasoning = [];
+                this.responseActions = [];
+                this.activityLog = [];
+                this.metrics = {
+                    mttr: 8.3,
+                    falsePositives: 9.2,
+                    threatsBlocked: 1247,
+                    compliance: 95.8,
+                    scenariosSimulated: 0,
+                    successRate: 99.2,
+                    avgResponseTime: 8.3
+                };
+                this.currentAgent = 'ADA';
+                this.attackIntensity = 5;
+                this.responseSpeed = 'normal';
+                this.startTime = Date.now();
+                
+                // Demo steps for manual mode
+                this.demoSteps = [
+                    {
+                        title: "Welcome to Digital Twin SOC",
+                        description: "This is your AI-powered security operations center",
+                        action: () => this.showWelcomeStep()
+                    },
+                    {
+                        title: "Network Overview",
+                        description: "Here's your network infrastructure",
+                        action: () => this.showNetworkStep()
+                    },
+                    {
+                        title: "AI Agents Introduction",
+                        description: "Meet your three AI security agents",
+                        action: () => this.showAgentsStep()
+                    },
+                    {
+                        title: "Threat Detection",
+                        description: "Watch as threats are detected in real-time",
+                        action: () => this.showDetectionStep()
+                    },
+                    {
+                        title: "AI Analysis",
+                        description: "See how AI agents analyze and reason about threats",
+                        action: () => this.showAnalysisStep()
+                    },
+                    {
+                        title: "Automated Response",
+                        description: "Watch automated containment and response actions",
+                        action: () => this.showResponseStep()
+                    },
+                    {
+                        title: "Performance Metrics",
+                        description: "See the dramatic improvements in security metrics",
+                        action: () => this.showMetricsStep()
+                    },
+                    {
+                        title: "Demo Complete",
+                        description: "You've seen the future of cybersecurity",
+                        action: () => this.showCompleteStep()
+                    }
+                ];
+                
+                this.initializeNetwork();
+                this.setupEventListeners();
+                this.startActivityLogging();
+                this.updateUptime();
+                
+                // Initialize AI reasoning display
+                this.startAIAnalysis();
+            }
+
+            initializeNetwork() {
+                const canvas = document.getElementById('networkCanvas');
+                const nodes = [
+                    { 
+                        id: 'firewall', 
+                        name: 'Perimeter Firewall', 
+                        x: 60, y: 60, 
+                        type: 'security', 
+                        status: 'active',
+                        ip: '10.0.0.1',
+                        persona: 'Network Security Gateway',
+                        description: 'Cisco ASA 5520\nBlocks malicious traffic\nVPN termination point'
+                    },
+                    { 
+                        id: 'web-server', 
+                        name: 'Web Server', 
+                        x: 180, y: 100, 
+                        type: 'server', 
+                        status: 'active',
+                        ip: '10.0.1.10',
+                        persona: 'Production Web App',
+                        description: 'Apache/Nginx Server\nHosts customer portal\nSSL/TLS enabled'
+                    },
+                    { 
+                        id: 'database', 
+                        name: 'Database', 
+                        x: 300, y: 60, 
+                        type: 'database', 
+                        status: 'active',
+                        ip: '10.0.2.10',
+                        persona: 'Customer Data Store',
+                        description: 'PostgreSQL 14\nCustomer records\nEncrypted at rest'
+                    },
+                    { 
+                        id: 'user-pc', 
+                        name: 'User PC', 
+                        x: 120, y: 200, 
+                        type: 'endpoint', 
+                        status: 'active',
+                        ip: '10.0.3.100',
+                        persona: 'Sarah Chen - Marketing',
+                        description: 'Windows 11 Pro\nOffice 365 user\nRegular employee'
+                    },
+                    { 
+                        id: 'admin-pc', 
+                        name: 'Admin PC', 
+                        x: 240, y: 200, 
+                        type: 'endpoint', 
+                        status: 'active',
+                        ip: '10.0.3.101',
+                        persona: 'Mike Rodriguez - IT Admin',
+                        description: 'Windows 11 Enterprise\nDomain admin rights\nPrivileged access'
+                    },
+                    { 
+                        id: 'api-gateway', 
+                        name: 'API Gateway', 
+                        x: 180, y: 280, 
+                        type: 'gateway', 
+                        status: 'active',
+                        ip: '10.0.1.20',
+                        persona: 'API Management',
+                        description: 'Kong Gateway\nRate limiting\nOAuth 2.0 auth'
+                    }
+                ];
+
+                this.networkNodes = nodes;
+                
+                // Ensure all nodes start as active (green)
+                this.networkNodes.forEach(node => {
+                    node.status = 'active';
+                });
+                
+                this.renderNetwork();
+            }
+
+            renderNetwork() {
+                const canvas = document.getElementById('networkCanvas');
+                canvas.innerHTML = '';
+
+                this.networkNodes.forEach(node => {
+                    const nodeElement = document.createElement('div');
+                    nodeElement.className = `network-node absolute w-16 h-16 rounded-xl border-3 flex items-center justify-center text-sm font-bold cursor-pointer`;
+                    
+                // Set node styling based on type and status
+                const typeStyles = {
+                    security: 'bg-red-900 border-red-500 text-red-200',
+                    server: 'bg-blue-900 border-blue-500 text-blue-200',
+                    database: 'bg-green-900 border-green-500 text-green-200',
+                    endpoint: 'bg-purple-900 border-purple-500 text-purple-200',
+                    gateway: 'bg-orange-900 border-orange-500 text-orange-200'
+                };
+                
+                // Override colors based on status
+                const statusStyles = {
+                    active: 'bg-green-900 border-green-500 text-green-200',
+                    threatened: 'bg-yellow-900 border-yellow-500 text-yellow-200',
+                    compromised: 'bg-red-900 border-red-500 text-red-200',
+                    isolated: 'bg-purple-900 border-purple-500 text-purple-200'
+                };
+                
+                // Use status color if available, otherwise use type color
+                const nodeStyle = statusStyles[node.status] || typeStyles[node.type];
+                nodeElement.className += ` ${nodeStyle}`;
+                    nodeElement.style.left = `${node.x}px`;
+                    nodeElement.style.top = `${node.y}px`;
+                    nodeElement.textContent = node.name.split(' ')[0];
+                    nodeElement.title = `${node.name}\nIP: ${node.ip}\nPersona: ${node.persona}\nStatus: ${node.status.toUpperCase()}\nClick to interact`;
+                    
+                    // Add click handler for manual mode
+                    nodeElement.addEventListener('click', () => {
+                        if (this.isManualMode) {
+                            this.highlightNode(node);
+                        }
+                    });
+                    
+                    // Add hover handler
+                    nodeElement.addEventListener('mouseenter', () => {
+                        this.showNodeInfo(node);
+                    });
+                    
+                    nodeElement.addEventListener('mouseleave', () => {
+                        this.hideNodeInfo();
+                    });
+                    
+                    // Add threat indicator if node is under attack
+                    if (node.status === 'threatened') {
+                        const threatIndicator = document.createElement('div');
+                        threatIndicator.className = 'threat-indicator';
+                        nodeElement.appendChild(threatIndicator);
+                    }
+                    
+                    canvas.appendChild(nodeElement);
+                });
+            }
+
+            setupEventListeners() {
+                document.getElementById('startSimulation').addEventListener('click', () => {
+                    this.startSimulation();
+                });
+
+                document.getElementById('pauseSimulation').addEventListener('click', () => {
+                    this.pauseSimulation();
+                });
+
+                document.getElementById('resetSimulation').addEventListener('click', () => {
+                    this.resetSimulation();
+                });
+
+                document.getElementById('attackIntensity').addEventListener('input', (e) => {
+                    this.attackIntensity = parseInt(e.target.value);
+                });
+
+                document.getElementById('responseSpeed').addEventListener('change', (e) => {
+                    this.responseSpeed = e.target.value;
+                });
+
+                // Demo mode switching
+                document.getElementById('autoMode').addEventListener('click', () => {
+                    this.switchToAutoMode();
+                });
+
+                document.getElementById('manualMode').addEventListener('click', () => {
+                    this.switchToManualMode();
+                });
+
+                // Manual demo controls
+                document.getElementById('nextStep').addEventListener('click', () => {
+                    this.nextStep();
+                });
+
+                document.getElementById('prevStep').addEventListener('click', () => {
+                    this.prevStep();
+                });
+
+                document.getElementById('triggerAttack').addEventListener('click', () => {
+                    this.triggerAttack();
+                });
+
+                document.getElementById('showResponse').addEventListener('click', () => {
+                    this.showResponse();
+                });
+
+                // Agent switching
+                ['ADA', 'TAA', 'CRA'].forEach(agent => {
+                    document.getElementById(`agent${agent}`).addEventListener('click', () => {
+                        this.switchAgent(agent);
+                    });
+                });
+            }
+
+            startSimulation() {
+                this.isRunning = true;
+                this.startTime = Date.now();
+                document.getElementById('startSimulation').textContent = '🔄 Demo Running...';
+                document.getElementById('startSimulation').className = 'px-8 py-4 bg-green-600 text-white rounded-xl font-bold text-lg transition-all cursor-not-allowed';
+                
+                this.addActivityLog('🚀 Digital Twin SOC simulation started', 'system');
+                this.generateAttackScenarios();
+                this.startAIAnalysis();
+                this.startAutomatedResponses();
+            }
+
+            pauseSimulation() {
+                this.isRunning = false;
+                document.getElementById('startSimulation').textContent = '🚀 Resume Demo';
+                document.getElementById('startSimulation').className = 'px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg';
+                this.addActivityLog('⏸ Simulation paused', 'system');
+            }
+
+            resetSimulation() {
+                this.isRunning = false;
+                this.attackScenarios = [];
+                this.aiReasoning = [];
+                this.responseActions = [];
+                this.activityLog = [];
+                this.metrics.scenariosSimulated = 0;
+                this.startTime = Date.now();
+                
+                // Reset network nodes
+                this.networkNodes.forEach(node => {
+                    node.status = 'active';
+                });
+                
+                this.renderNetwork();
+                
+                // Clear any existing response indicators
+                document.querySelectorAll('.response-indicator').forEach(indicator => {
+                    indicator.remove();
+                });
+                this.updateDisplays();
+                
+                document.getElementById('startSimulation').textContent = '🚀 Start Live Demo';
+                document.getElementById('startSimulation').className = 'px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg';
+                this.addActivityLog('🔄 Simulation reset', 'system');
+            }
+
+            generateAttackScenarios() {
+                const scenarios = [
+                    {
+                        id: 'phishing-attack',
+                        name: 'Phishing Attack',
+                        description: 'Malicious email targeting Sarah Chen (Marketing)',
+                        severity: 'high',
+                        progress: 0,
+                        target: 'user-pc',
+                        technique: 'T1566 - Phishing',
+                        targetPersona: 'Sarah Chen - Marketing'
+                    },
+                    {
+                        id: 'data-exfiltration',
+                        name: 'Data Exfiltration',
+                        description: 'Suspicious data transfer from Customer Data Store',
+                        severity: 'critical',
+                        progress: 0,
+                        target: 'database',
+                        technique: 'T1041 - Exfiltration Over C2 Channel',
+                        targetPersona: 'Customer Data Store'
+                    },
+                    {
+                        id: 'privilege-escalation',
+                        name: 'Privilege Escalation',
+                        description: 'Unauthorized access attempt on Production Web App',
+                        severity: 'high',
+                        progress: 0,
+                        target: 'web-server',
+                        technique: 'T1055 - Process Injection',
+                        targetPersona: 'Production Web App'
+                    },
+                    {
+                        id: 'supply-chain',
+                        name: 'Supply Chain Compromise',
+                        description: 'Malicious package in API Management system',
+                        severity: 'medium',
+                        progress: 0,
+                        target: 'api-gateway',
+                        technique: 'T1195 - Supply Chain Compromise',
+                        targetPersona: 'API Management'
+                    }
+                ];
+
+                // Add scenarios based on attack intensity
+                const numScenarios = Math.min(this.attackIntensity, scenarios.length);
+                this.attackScenarios = scenarios.slice(0, numScenarios);
+                
+                this.updateAttackScenariosDisplay();
+                this.addActivityLog(`⚡ Generated ${numScenarios} attack scenarios`, 'threat');
+            }
+
+            updateAttackScenariosDisplay() {
+                const container = document.getElementById('attackScenarios');
+                container.innerHTML = this.attackScenarios.map(scenario => `
+                    <div class="attack-scenario" data-scenario="${scenario.id}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="text-lg font-bold text-white">${scenario.name}</div>
+                                <div class="text-sm text-slate-300">${scenario.description}</div>
+                            </div>
+                            <div class="text-sm px-3 py-1 rounded-lg ${
+                                scenario.severity === 'critical' ? 'bg-red-900 text-red-200' :
+                                scenario.severity === 'high' ? 'bg-orange-900 text-orange-200' :
+                                'bg-yellow-900 text-yellow-200'
+                            }">
+                                ${scenario.severity.toUpperCase()}
+                            </div>
+                        </div>
+                        <div class="threat-timeline">
+                            <div class="threat-progress" style="width: ${scenario.progress}%"></div>
+                        </div>
+                        <div class="text-sm text-slate-400 mt-2">
+                            Target: ${scenario.targetPersona} • ${scenario.technique}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            startAIAnalysis() {
+                const reasoningTemplates = {
+                    ADA: [
+                        "🔍 Analyzing network traffic patterns for suspicious activity...",
+                        "🚨 Detected phishing email targeting Sarah Chen (Marketing)",
+                        "📊 Cross-referencing with threat intelligence databases...",
+                        "✅ Confidence level: 94.7% - Threat confirmed",
+                        "🛡️ Initiating automated containment procedures",
+                        "🔒 Isolating affected endpoint from network segment"
+                    ],
+                    TAA: [
+                        "🧠 Processing attack indicators using machine learning models...",
+                        "📈 Pattern analysis: This matches MITRE ATT&CK technique T1566 (Phishing)",
+                        "🔮 Predicting next-stage attack: Likely credential harvesting",
+                        "⏰ Timeline analysis: Attack initiated 3.2 minutes ago",
+                        "👤 Threat actor profile: Advanced persistent threat group",
+                        "💡 Recommendation: Immediate isolation + forensic analysis"
+                    ],
+                    CRA: [
+                        "📋 Validating response actions against compliance framework...",
+                        "✅ Checking: Does endpoint isolation violate data retention rules?",
+                        "📝 Audit trail: All actions logged for regulatory compliance",
+                        "🎯 Verification: Response maintains 95.8% compliance score",
+                        "📄 Documentation: Incident response procedures followed",
+                        "✅ Compliance status: APPROVED for automated execution"
+                    ]
+                };
+
+                const currentReasoning = reasoningTemplates[this.currentAgent] || reasoningTemplates.ADA;
+                
+                this.aiReasoning = currentReasoning.map((text, index) => ({
+                    id: Date.now() + index,
+                    text: text,
+                    timestamp: new Date(),
+                    agent: this.currentAgent
+                }));
+
+                this.updateAIReasoningDisplay();
+            }
+
+            updateAIReasoningDisplay() {
+                const container = document.getElementById('aiReasoning');
+                container.innerHTML = this.aiReasoning.map(reasoning => `
+                    <div class="log-entry p-4 bg-slate-800 rounded-lg border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm font-bold text-blue-400">${reasoning.agent}</span>
+                            <span class="text-sm text-slate-500">${reasoning.timestamp.toLocaleTimeString()}</span>
+                        </div>
+                        <div class="text-base text-slate-200">${reasoning.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            startAutomatedResponses() {
+                if (!this.isRunning) return;
+
+                const responseTemplates = [
+                    "🔒 Isolating compromised endpoint from network",
+                    "🛡️ Blocking malicious IP addresses at firewall",
+                    "🔑 Revoking compromised user credentials",
+                    "📊 Initiating forensic data collection",
+                    "🚨 Alerting security team via SOAR platform",
+                    "📋 Creating incident ticket in ITSM system",
+                    "🔍 Scanning network for lateral movement indicators",
+                    "⚡ Applying emergency security patches"
+                ];
+
+                this.responseActions = responseTemplates.slice(0, 4).map((action, index) => ({
+                    id: Date.now() + index,
+                    action: action,
+                    status: index < 2 ? 'completed' : 'pending',
+                    timestamp: new Date()
+                }));
+
+                this.updateResponseActionsDisplay();
+            }
+
+            updateResponseActionsDisplay() {
+                const container = document.getElementById('responseActions');
+                container.innerHTML = this.responseActions.map(response => `
+                    <div class="response-action">
+                        <div class="flex justify-between items-center">
+                            <span class="text-base">${response.action}</span>
+                            <span class="text-sm px-3 py-1 rounded-lg ${
+                                response.status === 'completed' ? 'bg-green-900 text-green-200' : 
+                                response.status === 'in_progress' ? 'bg-yellow-900 text-yellow-200' :
+                                'bg-gray-900 text-gray-200'
+                            }">
+                                ${response.status.toUpperCase()}
+                            </span>
+                        </div>
+                        ${response.target ? `<div class="text-xs text-slate-400 mt-1">Target: ${response.target}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+
+            switchAgent(agent) {
+                this.currentAgent = agent;
+                
+                // Update agent cards
+                ['ADA', 'TAA', 'CRA'].forEach(a => {
+                    const card = document.getElementById(`agent${a}`);
+                    if (a === agent) {
+                        card.classList.add('active');
+                    } else {
+                        card.classList.remove('active');
+                    }
+                });
+
+                // Update agent name display
+                const agentNames = {
+                    'ADA': 'ADA - Adaptive Defense Agent',
+                    'TAA': 'TAA - Threat Analysis Agent',
+                    'CRA': 'CRA - Compliance Agent'
+                };
+                document.getElementById('currentAgentName').textContent = agentNames[agent];
+
+                // Update AI reasoning for selected agent
+                this.startAIAnalysis();
+            }
+
+            addActivityLog(message, type = 'info') {
+                const timestamp = new Date();
+                this.activityLog.unshift({
+                    id: Date.now(),
+                    text: message,
+                    timestamp: timestamp,
+                    type: type
+                });
+
+                // Keep only last 15 activities
+                if (this.activityLog.length > 15) {
+                    this.activityLog = this.activityLog.slice(0, 15);
+                }
+
+                this.updateActivityLogDisplay();
+            }
+
+            startActivityLogging() {
+                setInterval(() => {
+                    if (!this.isRunning) return;
+
+                    const activities = [
+                        "🚨 New threat detected: Suspicious network activity",
+                        "🤖 AI analysis complete: Threat confidence 94.7%",
+                        "⚡ Automated response initiated: Endpoint isolation",
+                        "✅ Compliance check passed: Response approved",
+                        "🛡️ Threat contained: Attack vector neutralized",
+                        "📊 Forensic analysis started: Evidence collection",
+                        "📋 Incident ticket created: INC-2024-001247",
+                        "🚨 Security team notified: High priority alert"
+                    ];
+
+                    const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+                    this.addActivityLog(randomActivity, Math.random() > 0.7 ? 'threat' : 'response');
+                    
+                    this.updateMetrics();
+                }, 4000);
+            }
+
+            updateActivityLogDisplay() {
+                const container = document.getElementById('activityLog');
+                container.innerHTML = this.activityLog.map(activity => `
+                    <div class="log-entry p-3 bg-slate-800 rounded-lg text-sm">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-semibold ${
+                                activity.type === 'threat' ? 'text-red-400' : 
+                                activity.type === 'response' ? 'text-green-400' : 'text-blue-400'
+                            }">
+                                ${activity.type === 'threat' ? '🚨' : 
+                                  activity.type === 'response' ? '✅' : 'ℹ️'} ${activity.type.toUpperCase()}
+                            </span>
+                            <span class="text-slate-500">${activity.timestamp.toLocaleTimeString()}</span>
+                        </div>
+                        <div class="text-slate-200">${activity.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            updateMetrics() {
+                // Simulate metric changes
+                this.metrics.scenariosSimulated += Math.floor(Math.random() * 3);
+                this.metrics.threatsBlocked += Math.floor(Math.random() * 2);
+                this.metrics.avgResponseTime = (8.0 + Math.random() * 2).toFixed(1);
+                
+                // Update displays
+                document.getElementById('scenariosSimulated').textContent = this.metrics.scenariosSimulated;
+                document.getElementById('threatsBlocked').textContent = this.metrics.threatsBlocked;
+                document.getElementById('avgResponseTime').textContent = this.metrics.avgResponseTime + 's';
+                document.getElementById('mttrValue').textContent = this.metrics.avgResponseTime;
+                
+                // Update bottom status bar
+                document.getElementById('totalScenarios').textContent = this.metrics.scenariosSimulated;
+                document.getElementById('aiDecisions').textContent = this.aiReasoning.length;
+                document.getElementById('responsesExecuted').textContent = this.responseActions.filter(r => r.status === 'completed').length;
+            }
+
+            updateUptime() {
+                setInterval(() => {
+                    const elapsed = Date.now() - this.startTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    document.getElementById('uptime').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+
+            updateDisplays() {
+                this.updateAttackScenariosDisplay();
+                this.updateAIReasoningDisplay();
+                this.updateResponseActionsDisplay();
+                this.updateActivityLogDisplay();
+                this.updateMetrics();
+            }
+
+            // Manual Demo Mode Methods
+            switchToAutoMode() {
+                this.isManualMode = false;
+                document.getElementById('autoMode').className = 'flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold transition';
+                document.getElementById('manualMode').className = 'flex-1 px-3 py-2 bg-slate-600 text-slate-300 rounded-lg text-sm font-semibold transition';
+                document.getElementById('manualControls').classList.add('hidden');
+                document.getElementById('autoControls').classList.remove('hidden');
+                document.getElementById('modeDescription').textContent = 'Auto: Runs automatically | Manual: Click to advance';
+            }
+
+            switchToManualMode() {
+                this.isManualMode = true;
+                document.getElementById('manualMode').className = 'flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold transition';
+                document.getElementById('autoMode').className = 'flex-1 px-3 py-2 bg-slate-600 text-slate-300 rounded-lg text-sm font-semibold transition';
+                document.getElementById('autoControls').classList.add('hidden');
+                document.getElementById('manualControls').classList.remove('hidden');
+                document.getElementById('modeDescription').textContent = 'Manual: Click buttons to advance | Auto: Runs automatically';
+                
+                // Start manual demo
+                this.currentStep = 1;
+                this.executeCurrentStep();
+            }
+
+            nextStep() {
+                if (this.currentStep < this.totalSteps) {
+                    this.currentStep++;
+                    this.executeCurrentStep();
+                }
+            }
+
+            prevStep() {
+                if (this.currentStep > 1) {
+                    this.currentStep--;
+                    this.executeCurrentStep();
+                }
+            }
+
+            executeCurrentStep() {
+                const step = this.demoSteps[this.currentStep - 1];
+                if (step) {
+                    step.action();
+                    document.getElementById('currentStep').textContent = this.currentStep;
+                    document.getElementById('totalSteps').textContent = this.totalSteps;
+                    
+                    // Update step description
+                    const stepInfo = document.querySelector('.explanation-box');
+                    if (stepInfo) {
+                        stepInfo.innerHTML = `
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-2xl">💡</span>
+                                <span class="text-xl font-bold text-white">Step ${this.currentStep}: ${step.title}</span>
+                            </div>
+                            <div class="text-slate-200 text-lg leading-relaxed">
+                                ${step.description}
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            triggerAttack() {
+                this.addActivityLog('🚨 Manual attack triggered for demonstration', 'threat');
+                this.generateAttackScenarios();
+                
+                // Target the User PC specifically (Sarah Chen - Marketing)
+                const userNode = this.networkNodes.find(node => node.id === 'user-pc');
+                if (userNode) {
+                    userNode.status = 'threatened';
+                    this.renderNetwork();
+                    this.addActivityLog(`⚡ Attack detected on ${userNode.name} (${userNode.ip}) - ${userNode.persona}`, 'threat');
+                    this.addActivityLog(`🎯 Phishing email targeting Sarah Chen's workstation`, 'threat');
+                }
+            }
+
+            showResponse() {
+                this.addActivityLog('🛡️ Manual response demonstration triggered', 'response');
+                
+                // Generate multiple response actions with visual feedback
+                const responseActions = [
+                    { action: '🔒 Isolating compromised endpoint from network', target: 'user-pc', delay: 0 },
+                    { action: '🛡️ Blocking malicious IP addresses at firewall', target: 'firewall', delay: 1000 },
+                    { action: '🔑 Revoking compromised user credentials', target: 'user-pc', delay: 2000 },
+                    { action: '📊 Initiating forensic data collection', target: 'user-pc', delay: 3000 },
+                    { action: '🚨 Alerting security team via SOAR platform', target: 'firewall', delay: 4000 },
+                    { action: '📋 Creating incident ticket in ITSM system', target: 'firewall', delay: 5000 }
+                ];
+                
+                // Execute responses with visual feedback
+                responseActions.forEach((response, index) => {
+                    setTimeout(() => {
+                        // Add to activity log
+                        this.addActivityLog(response.action, 'response');
+                        
+                        // Update response actions display
+                        this.responseActions.push({
+                            id: Date.now() + index,
+                            action: response.action,
+                            status: 'in_progress',
+                            timestamp: new Date(),
+                            target: response.target
+                        });
+                        
+                        // Visual feedback on network
+                        this.highlightResponseOnNetwork(response.target, response.action);
+                        
+                        // Update response actions display
+                        this.updateResponseActionsDisplay();
+                        
+                        // Mark as completed after a delay
+                        setTimeout(() => {
+                            const responseAction = this.responseActions.find(r => r.action === response.action);
+                            if (responseAction) {
+                                responseAction.status = 'completed';
+                                this.updateResponseActionsDisplay();
+                            }
+                        }, 2000);
+                        
+                    }, response.delay);
+                });
+                
+                this.addActivityLog('✅ All automated response actions executed successfully', 'response');
+            }
+
+            // Demo Step Actions
+            showWelcomeStep() {
+                this.addActivityLog('🎉 Welcome to Digital Twin SOC demonstration', 'system');
+                this.addActivityLog('🔮 This is your AI-powered security operations center', 'system');
+            }
+
+            showNetworkStep() {
+                this.addActivityLog('🌐 Here is your network infrastructure', 'system');
+                this.addActivityLog('📊 Each node represents a critical system component', 'system');
+                
+                // Highlight all nodes briefly
+                this.networkNodes.forEach((node, index) => {
+                    setTimeout(() => {
+                        const nodeElement = document.querySelector(`[title*="${node.name}"]`);
+                        if (nodeElement) {
+                            nodeElement.style.transform = 'scale(1.2)';
+                            nodeElement.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.8)';
+                            setTimeout(() => {
+                                nodeElement.style.transform = 'scale(1)';
+                                nodeElement.style.boxShadow = 'none';
+                            }, 1000);
+                        }
+                    }, index * 500);
+                });
+            }
+
+            showAgentsStep() {
+                this.addActivityLog('🤖 Meet your three AI security agents', 'system');
+                this.addActivityLog('🛡️ ADA: Adaptive Defense Agent - Detects and contains threats', 'system');
+                this.addActivityLog('🧠 TAA: Threat Analysis Agent - Predicts attack patterns', 'system');
+                this.addActivityLog('✓ CRA: Compliance Agent - Ensures regulatory compliance', 'system');
+                
+                // Highlight agent cards
+                ['ADA', 'TAA', 'CRA'].forEach((agent, index) => {
+                    setTimeout(() => {
+                        const card = document.getElementById(`agent${agent}`);
+                        if (card) {
+                            card.style.transform = 'scale(1.1)';
+                            card.style.boxShadow = '0 0 25px rgba(34, 197, 94, 0.6)';
+                            setTimeout(() => {
+                                card.style.transform = 'scale(1)';
+                                card.style.boxShadow = 'none';
+                            }, 1500);
+                        }
+                    }, index * 800);
+                });
+            }
+
+            showDetectionStep() {
+                this.addActivityLog('🔍 Now watch threat detection in action', 'system');
+                this.addActivityLog('📡 Monitoring network traffic for suspicious patterns', 'system');
+                
+                // Trigger a sample attack
+                setTimeout(() => {
+                    this.triggerAttack();
+                }, 1000);
+            }
+
+            showAnalysisStep() {
+                this.addActivityLog('🧠 AI agents are analyzing the threat', 'system');
+                this.addActivityLog('📊 Cross-referencing with threat intelligence', 'system');
+                
+                // Show AI reasoning
+                this.startAIAnalysis();
+                
+                // Cycle through agents
+                ['ADA', 'TAA', 'CRA'].forEach((agent, index) => {
+                    setTimeout(() => {
+                        this.switchAgent(agent);
+                    }, index * 2000);
+                });
+            }
+
+            showResponseStep() {
+                this.addActivityLog('⚡ Automated response actions are being executed', 'system');
+                this.addActivityLog('🛡️ Threat containment procedures initiated', 'system');
+                
+                // Show responses
+                setTimeout(() => {
+                    this.showResponse();
+                }, 1000);
+            }
+
+            showMetricsStep() {
+                this.addActivityLog('📊 Here are the performance improvements', 'system');
+                this.addActivityLog('🎯 MTTR: 30 min → 8.3 min (73% faster)', 'system');
+                this.addActivityLog('🎯 False Positives: 42% → 9.2% (78% reduction)', 'system');
+                this.addActivityLog('🎯 Compliance: 80% → 95.8% (20% improvement)', 'system');
+                
+                // Highlight metrics
+                const metrics = ['mttrValue', 'falsePositives', 'threatsBlocked', 'compliance'];
+                metrics.forEach((metricId, index) => {
+                    setTimeout(() => {
+                        const element = document.getElementById(metricId);
+                        if (element) {
+                            element.style.transform = 'scale(1.2)';
+                            element.style.color = '#22c55e';
+                            setTimeout(() => {
+                                element.style.transform = 'scale(1)';
+                                element.style.color = 'white';
+                            }, 1500);
+                        }
+                    }, index * 1000);
+                });
+            }
+
+            showCompleteStep() {
+                this.addActivityLog('🎉 Demo complete! You have seen the future of cybersecurity', 'system');
+                this.addActivityLog('🚀 Digital Twin SOC: 3x faster, 78% less noise, 95%+ compliant', 'system');
+                
+                // Show completion animation
+                document.getElementById('systemStatus').textContent = 'DEMO COMPLETE';
+                document.getElementById('systemStatus').className = 'text-2xl font-bold text-green-400 pulse-glow';
+            }
+
+            // Interactive Methods
+            highlightNode(node) {
+                this.addActivityLog(`🖱️ Clicked on ${node.name}`, 'system');
+                this.addActivityLog(`📊 IP: ${node.ip} | Persona: ${node.persona}`, 'system');
+                this.addActivityLog(`📊 Status: ${node.status.toUpperCase()}`, 'system');
+                
+                // Visual feedback
+                const nodeElement = document.querySelector(`[title*="${node.name}"]`);
+                if (nodeElement) {
+                    nodeElement.style.transform = 'scale(1.3)';
+                    nodeElement.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.8)';
+                    setTimeout(() => {
+                        nodeElement.style.transform = 'scale(1)';
+                        nodeElement.style.boxShadow = 'none';
+                    }, 2000);
+                }
+            }
+
+            showNodeInfo(node) {
+                // Create or update info tooltip
+                let tooltip = document.getElementById('nodeTooltip');
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.id = 'nodeTooltip';
+                    tooltip.className = 'absolute bg-slate-800 border border-slate-600 rounded-lg p-3 text-sm text-white z-50 pointer-events-none';
+                    tooltip.style.maxWidth = '200px';
+                    document.getElementById('networkCanvas').appendChild(tooltip);
+                }
+                
+                tooltip.innerHTML = `
+                    <div class="font-bold text-blue-400 mb-2">${node.name}</div>
+                    <div class="text-slate-300 mb-1"><span class="text-yellow-400">IP:</span> ${node.ip}</div>
+                    <div class="text-slate-300 mb-1"><span class="text-purple-400">Persona:</span> ${node.persona}</div>
+                    <div class="text-slate-300 mb-1"><span class="text-green-400">Status:</span> ${node.status.toUpperCase()}</div>
+                    <div class="text-slate-300 mb-2"><span class="text-orange-400">Type:</span> ${node.type}</div>
+                    <div class="text-xs text-slate-400 border-t border-slate-600 pt-2">
+                        ${node.description.split('\n').map(line => `<div>• ${line}</div>`).join('')}
+                    </div>
+                    ${this.isManualMode ? '<div class="text-blue-400 mt-2 text-xs font-semibold">🖱️ Click to interact</div>' : ''}
+                `;
+                
+                // Position tooltip near mouse
+                tooltip.style.display = 'block';
+            }
+
+            hideNodeInfo() {
+                const tooltip = document.getElementById('nodeTooltip');
+                if (tooltip) {
+                    tooltip.style.display = 'none';
+                }
+            }
+
+            highlightResponseOnNetwork(targetNodeId, action) {
+                const targetNode = this.networkNodes.find(node => node.id === targetNodeId);
+                if (!targetNode) return;
+                
+                const nodeElement = document.querySelector(`[title*="${targetNode.name}"]`);
+                if (!nodeElement) return;
+                
+                // Create response indicator
+                const responseIndicator = document.createElement('div');
+                responseIndicator.className = 'absolute top-0 left-0 w-full h-full rounded-xl border-2 border-green-400 bg-green-400/20 pointer-events-none';
+                responseIndicator.style.animation = 'response-pulse 1s ease-in-out infinite';
+                nodeElement.appendChild(responseIndicator);
+                
+                // Update node status based on action
+                if (action.includes('Isolating') || action.includes('Revoking')) {
+                    targetNode.status = 'isolated';
+                } else if (action.includes('Blocking')) {
+                    targetNode.status = 'active'; // Firewall is working
+                } else if (action.includes('Forensic') || action.includes('Alerting')) {
+                    // Keep current status for these actions
+                }
+                
+                // Immediately update the visual representation
+                this.renderNetwork();
+                
+                // Visual feedback
+                nodeElement.style.transform = 'scale(1.2)';
+                nodeElement.style.boxShadow = '0 0 25px rgba(34, 197, 94, 0.8)';
+                
+                // Remove indicator after 3 seconds
+                setTimeout(() => {
+                    if (responseIndicator && responseIndicator.parentNode) {
+                        responseIndicator.parentNode.removeChild(responseIndicator);
+                    }
+                    nodeElement.style.transform = 'scale(1)';
+                    nodeElement.style.boxShadow = 'none';
+                    
+                    // Re-render network to show final status changes
+                    this.renderNetwork();
+                }, 3000);
+                
+                // Add specific activity log for the action
+                this.addActivityLog(`🎯 ${action} on ${targetNode.name} (${targetNode.ip})`, 'response');
+            }
+        }
+
+        // Initialize the Digital Twin SOC
+        const soc = new DigitalTwinSOC();
+    </script>
+</body>
+</html>

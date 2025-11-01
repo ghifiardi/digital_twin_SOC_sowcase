@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="AI-Driven SOC Transformation Dashboard - Enhanced Simulation with AI Reasoning">
+    <title>AI-Driven SOC Transformation - Enhanced Simulation with AI Reasoning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Improved focus states for accessibility */
+        *:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 0.8);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        
+        @keyframes particle-pulse {
+            0% { opacity: 1; transform: scale(1) translateY(0px); }
+            100% { opacity: 0; transform: scale(0) translateY(-20px); }
+        }
+        
+        @keyframes agent-glow {
+            0%, 100% { 
+                box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.3);
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                opacity: 1;
+                filter: brightness(1);
+            }
+            50% { 
+                opacity: 0.8;
+                filter: brightness(1.2);
+            }
+        }
+        
+        .agent-active {
+            animation: agent-glow 1.5s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.8) !important;
+        }
+
+        .agent-card.active {
+            border-color: rgba(59, 130, 246, 1) !important;
+            background: rgba(59, 130, 246, 0.15) !important;
+        }
+        
+        .particle {
+            animation: particle-pulse 2s ease-out forwards;
+        }
+        
+        .progress-bar {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .phase-container {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .metric-value {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .ai-reasoning {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-left: 4px solid rgba(34, 197, 94, 0.5);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .reasoning-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .reasoning-entry:last-child {
+            border-bottom: none;
+        }
+
+        .process-step {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 6px;
+            border-left: 3px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: rgba(59, 130, 246, 1);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: rgba(226, 232, 240, 0.9);
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .step-description {
+            color: rgba(148, 163, 184, 0.8);
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .agent-thinking {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: rgba(191, 219, 254, 0.9);
+        }
+
+        .thinking-title {
+            font-weight: 600;
+            color: rgba(96, 165, 250, 1);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .thinking-content {
+            color: rgba(148, 163, 184, 0.9);
+            padding-left: 12px;
+            border-left: 2px solid rgba(96, 165, 250, 0.3);
+            line-height: 1.4;
+        }
+
+        .capability-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(134, 239, 172, 0.9);
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .data-flow {
+            background: rgba(139, 92, 246, 0.05);
+            border-left: 3px solid rgba(139, 92, 246, 0.5);
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: rgba(196, 181, 253, 0.9);
+            font-family: 'Courier New', monospace;
+        }
+
+        .processing-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: rgba(34, 197, 94, 0.7);
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .scroll-container {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 3px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 3px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.5);
+        }
+
+        /* Enhanced UI/UX Improvements */
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .metric-bar {
+            position: relative;
+            overflow: hidden;
+            will-change: width;
+        }
+
+        .metric-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .agent-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .agent-card:hover::before {
+            left: 100%;
+        }
+
+        .phase-button {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .phase-button:hover {
+            transform: translateX(4px);
+        }
+
+        .phase-button.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(59, 130, 246, 1);
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 10px;
+            background: rgba(15, 23, 42, 0.95);
+            color: rgba(226, 232, 240, 1);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .flex.flex-col.gap-4.overflow-hidden {
+                flex-direction: column !important;
+            }
+            
+            .flex-1.flex.flex-col.gap-4.overflow-hidden {
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #app {
+                padding: 0;
+            }
+
+            .bg-gradient-to-b.from-slate-900 {
+                padding: 1rem !important;
+            }
+
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+
+            .flex.gap-3 {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .flex.justify-between.items-center {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .rounded-xl.p-6 {
+                padding: 1rem;
+            }
+
+            .px-6 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .text-base {
+                font-size: 0.875rem;
+            }
+
+            .text-sm {
+                font-size: 0.75rem;
+            }
+
+            .px-3 {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .py-3 {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+        }
+
+        /* Enhanced Accessibility */
+        button:focus-visible,
+        .agent-tab:focus-visible,
+        .phase-button:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 1);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Smooth transitions */
+        .transition {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        /* Enhanced metric cards */
+        .metric-item {
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .metric-item:hover {
+            background: rgba(15, 23, 42, 0.3);
+            transform: translateX(4px);
+        }
+
+        /* Better agent tab styling */
+        .agent-tab {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .agent-tab:hover {
+            background: rgba(59, 130, 246, 0.15) !important;
+            transform: translateY(-1px);
+        }
+
+        .agent-tab.active {
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Enhanced process steps */
+        .process-step {
+            transition: all 0.3s ease;
+            animation: slideInRight 0.4s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .process-step:hover {
+            background: rgba(15, 23, 42, 0.7);
+            transform: translateX(4px);
+            border-left-color: rgba(59, 130, 246, 0.8);
+        }
+
+        .process-step:nth-child(1) { animation-delay: 0.05s; }
+        .process-step:nth-child(2) { animation-delay: 0.1s; }
+        .process-step:nth-child(3) { animation-delay: 0.15s; }
+        .process-step:nth-child(4) { animation-delay: 0.2s; }
+        .process-step:nth-child(5) { animation-delay: 0.25s; }
+        .process-step:nth-child(6) { animation-delay: 0.3s; }
+
+        /* Enhanced data flow entries */
+        .data-flow {
+            transition: all 0.2s ease;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .data-flow:hover {
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateX(4px);
+            border-left-width: 4px;
+        }
+
+        /* Improved button states */
+        #toggleBtn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #toggleBtn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        #toggleBtn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        #toggleBtn:active {
+            transform: scale(0.98);
+        }
+
+        /* Enhanced completion message */
+        #completionMessage {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Better scrollbar for Firefox */
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(59, 130, 246, 0.3) rgba(15, 23, 42, 0.3);
+        }
+
+        /* Loading state for reasoning content */
+        .reasoning-loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Enhanced phase container transitions */
+        .phase-container {
+            will-change: transform, opacity;
+        }
+
+        /* Better text contrast */
+        .text-slate-400 {
+            color: rgba(148, 163, 184, 0.9);
+        }
+
+        .text-slate-500 {
+            color: rgba(148, 163, 184, 0.8);
+        }
+
+        /* Touch-friendly on mobile */
+        @media (hover: none) and (pointer: coarse) {
+            button, .agent-card, .agent-tab, .phase-button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="w-full h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-b from-slate-900 to-transparent p-4 border-b border-slate-700/30 z-20" role="banner">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center max-w-full px-4 md:px-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">AI-Driven SOC Transformation</h1>
+                    <p class="text-slate-400 text-xs mt-1">Intelligent Layer with LLM-Powered Agent Reasoning</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 items-end sm:items-center w-full sm:w-auto">
+                    <div class="text-right sm:text-right">
+                        <div class="text-xs text-slate-400" id="progressLabel">Transformation Progress</div>
+                        <div class="text-lg font-bold text-white metric-value" aria-live="polite" aria-atomic="true">
+                            <span id="progressPercent" aria-label="Progress percentage">0</span>%
+                        </div>
+                    </div>
+                    <button 
+                        id="toggleBtn" 
+                        class="px-6 py-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl"
+                        aria-label="Play or pause the transformation animation"
+                        aria-pressed="true"
+                    >▶ Play</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col lg:flex-row gap-4 p-2 md:p-4 overflow-hidden" role="main">
+            <!-- Left Column: Phase & Agent Reasoning (60%) -->
+            <div class="flex-1 flex flex-col gap-4 overflow-hidden">
+                <!-- Phase Overview -->
+                <div id="phaseContainer" class="rounded-xl p-6 bg-gradient-to-br from-blue-600/10 to-cyan-600/10 border border-slate-600/30 phase-container relative overflow-hidden" style="flex: 0 0 auto;">
+                    <div id="particlesContainer" class="absolute inset-0 opacity-30"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="text-xs font-semibold text-slate-400 mb-1">
+                                    Phase <span id="currentPhase">1</span> / <span id="totalPhases">4</span> — Quarter <span id="quarterNum">Q1</span>
+                                </div>
+                                <h2 id="phaseName" class="text-3xl font-bold text-white mb-1">Cognitive Telemetry</h2>
+                                <p id="phaseSubtitle" class="text-base text-slate-200 mb-3">Teaching the system to see</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-slate-400">Theme</div>
+                                <div id="phaseTheme" class="text-sm font-semibold text-blue-300">Data Visibility</div>
+                            </div>
+                        </div>
+                        <p id="phaseDescription" class="text-slate-300 text-sm mb-3">Deploying Chronicle SIEM integration and establishing BigQuery data lake</p>
+
+                        <!-- Agents -->
+                        <div class="flex flex-col sm:flex-row gap-3" role="group" aria-label="AI Agents">
+                            <div id="agentADA" class="flex-1 px-3 py-3 rounded-lg border-2 border-slate-600 bg-slate-800/50 transition agent-card" 
+                                 role="button" 
+                                 tabindex="0"
+                                 aria-label="ADA - Adaptive Defense Agent"
+                                 aria-pressed="false">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-4 h-4" aria-hidden="true">🛡</span>
+                                    <span class="font-bold text-slate-300 text-sm">ADA</span>
+                                </div>
+                                <div class="text-xs text-slate-400">Adaptive Defense</div>
+                            </div>
+                            <div id="agentTAA" class="flex-1 px-3 py-3 rounded-lg border-2 border-slate-600 bg-slate-800/50 transition agent-card"
+                                 role="button"
+                                 tabindex="0"
+                                 aria-label="TAA - Threat Analysis Agent"
+                                 aria-pressed="false">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-4 h-4" aria-hidden="true">🧠</span>
+                                    <span class="font-bold text-slate-300 text-sm">TAA</span>
+                                </div>
+                                <div class="text-xs text-slate-400">Threat Analysis</div>
+                            </div>
+                            <div id="agentCRA" class="flex-1 px-3 py-3 rounded-lg border-2 border-slate-600 bg-slate-800/50 transition agent-card"
+                                 role="button"
+                                 tabindex="0"
+                                 aria-label="CRA - Compliance Agent"
+                                 aria-pressed="false">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-4 h-4" aria-hidden="true">✓</span>
+                                    <span class="font-bold text-slate-300 text-sm">CRA</span>
+                                </div>
+                                <div class="text-xs text-slate-400">Compliance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LLM-Powered Agent Reasoning Panel -->
+                <div class="flex-1 rounded-xl bg-slate-950 border border-slate-700 p-4 flex flex-col overflow-hidden">
+                    <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-700">
+                        <span class="text-cyan-400">💭</span>
+                        <span class="text-sm font-semibold text-white">AI Agent Reasoning & LLM Analysis</span>
+                        <span class="processing-indicator"></span>
+                    </div>
+
+                    <!-- Tabs for different agents -->
+                    <div class="flex gap-2 mb-3 pb-3 border-b border-slate-700" role="tablist" aria-label="Agent selection tabs">
+                        <button class="agent-tab active px-3 py-1 text-xs font-semibold rounded transition" 
+                                data-agent="ADA" 
+                                role="tab"
+                                aria-selected="true"
+                                aria-controls="reasoningContent"
+                                style="background: rgba(59, 130, 246, 0.3); color: rgba(96, 165, 250, 1);">ADA</button>
+                        <button class="agent-tab px-3 py-1 text-xs font-semibold rounded transition" 
+                                data-agent="TAA"
+                                role="tab"
+                                aria-selected="false"
+                                aria-controls="reasoningContent"
+                                style="color: rgba(148, 163, 184, 0.7);">TAA</button>
+                        <button class="agent-tab px-3 py-1 text-xs font-semibold rounded transition" 
+                                data-agent="CRA"
+                                role="tab"
+                                aria-selected="false"
+                                aria-controls="reasoningContent"
+                                style="color: rgba(148, 163, 184, 0.7);">CRA</button>
+                    </div>
+
+                    <!-- Agent Reasoning Content -->
+                    <div id="reasoningContent" class="flex-1 scroll-container space-y-2">
+                        <!-- Content populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Process Details & Metrics (40%) -->
+            <div class="flex-1 flex flex-col gap-4 overflow-hidden">
+                <!-- Process Details Panel -->
+                <div class="flex-1 rounded-xl bg-slate-950 border border-slate-700 p-4 flex flex-col overflow-hidden">
+                    <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-700">
+                        <span class="text-orange-400">⚙️</span>
+                        <span class="text-sm font-semibold text-white">Process Flow & Data Architecture</span>
+                    </div>
+
+                    <div id="processFlow" class="flex-1 scroll-container space-y-2">
+                        <!-- Process steps populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Metrics Dashboard (Compact) -->
+                <div class="rounded-xl bg-slate-950 border border-slate-700 p-4">
+                    <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-700">
+                        <div class="flex items-center gap-2">
+                            <span class="text-green-400">📊</span>
+                            <span class="text-sm font-semibold text-white">Transformation Metrics</span>
+                        </div>
+                        <div class="text-xs text-slate-400">Live Updates</div>
+                    </div>
+
+                    <div class="space-y-3" role="region" aria-label="Transformation metrics">
+                        <!-- MTTR -->
+                        <div class="metric-item tooltip" data-tooltip="Mean Time To Response - Lower is better">
+                            <div class="flex justify-between items-center mb-1">
+                                <div class="text-xs font-semibold text-slate-300">MTTR</div>
+                                <div class="text-sm font-bold text-white metric-value" aria-live="polite">
+                                    <span id="mttr">30</span> min
+                                </div>
+                            </div>
+                            <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="mttrBar" class="h-full bg-gradient-to-r from-orange-500 to-red-500 metric-bar transition-all duration-500" style="width: 90%;" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="30" aria-label="MTTR progress"></div>
+                            </div>
+                        </div>
+
+                        <!-- False Positives -->
+                        <div class="metric-item tooltip" data-tooltip="False Positive Rate - Lower is better">
+                            <div class="flex justify-between items-center mb-1">
+                                <div class="text-xs font-semibold text-slate-300">False Positives</div>
+                                <div class="text-sm font-bold text-white metric-value" aria-live="polite">
+                                    <span id="falsePos">42</span>%
+                                </div>
+                            </div>
+                            <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="falsePosBar" class="h-full bg-gradient-to-r from-yellow-500 to-orange-500 metric-bar transition-all duration-500" style="width: 84%;" role="progressbar" aria-valuenow="42" aria-valuemin="0" aria-valuemax="42" aria-label="False positives progress"></div>
+                            </div>
+                        </div>
+
+                        <!-- Entropy -->
+                        <div class="metric-item tooltip" data-tooltip="System Entropy - Lower indicates better organization">
+                            <div class="flex justify-between items-center mb-1">
+                                <div class="text-xs font-semibold text-slate-300">System Entropy</div>
+                                <div class="text-sm font-bold text-white metric-value" aria-live="polite">
+                                    <span id="entropy">1.0</span>
+                                </div>
+                            </div>
+                            <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="entropyBar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 metric-bar transition-all duration-500" style="width: 100%;" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="System entropy progress"></div>
+                            </div>
+                        </div>
+
+                        <!-- Compliance -->
+                        <div class="metric-item tooltip" data-tooltip="Compliance Score - Higher is better">
+                            <div class="flex justify-between items-center mb-1">
+                                <div class="text-xs font-semibold text-slate-300">Compliance</div>
+                                <div class="text-sm font-bold text-white metric-value" aria-live="polite">
+                                    <span id="compliance">80</span>%
+                                </div>
+                            </div>
+                            <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="complianceBar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-500 metric-bar transition-all duration-500" style="width: 80%;" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Compliance progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase Navigation -->
+                <nav class="rounded-xl bg-slate-950 border border-slate-700 p-3" aria-label="Phase navigation">
+                    <div class="text-xs font-semibold text-slate-300 mb-2">PHASES</div>
+                    <div id="phaseButtons" class="space-y-1" role="tablist" aria-label="Transformation phases">
+                        <!-- Buttons generated by JS -->
+                    </div>
+                </nav>
+            </div>
+        </main>
+
+        <!-- Completion Message -->
+        <div id="completionMessage" class="hidden bg-gradient-to-t from-slate-900 to-transparent p-4 text-center border-t border-slate-700">
+            <h3 class="text-xl font-bold text-green-400 mb-1">✓ Transformation Complete</h3>
+            <p class="text-slate-300 text-sm">
+                3× faster response • 40% less noise • 95%+ compliant • Federated defense
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                name: 'Cognitive Telemetry',
+                subtitle: 'Teaching the system to see',
+                quarter: 'Q1',
+                theme: 'Data Visibility & Correlation',
+                description: 'Deploying Chronicle SIEM and establishing BigQuery data lake',
+                finalMetrics: { mttr: 15, falsePositives: 15, entropy: 0.8, compliance: 82 },
+                duration: 7000,
+                color: 'from-blue-600 to-cyan-600',
+                primaryAgent: 'ADA',
+                processSteps: [
+                    { title: 'Telemetry Ingestion', desc: 'Chronicle SIEM collects 50M+ security events from firewalls, APIs, endpoints' },
+                    { title: 'Data Normalization', desc: 'Convert disparate log formats into unified schema (JSON, Parquet)' },
+                    { title: 'BigQuery Integration', desc: 'Stream normalized data to petabyte-scale data lake for real-time analysis' },
+                    { title: 'ML Model Training', desc: 'Train correlation models on 6 months of historical security events' },
+                    { title: 'Alert Correlation', desc: 'Apply ML models to reduce alert noise from 42% to 15% false positives' },
+                    { title: 'Validation', desc: 'Achieve 90% alert correlation accuracy and establish baseline metrics' }
+                ],
+                agentReasonings: {
+                    ADA: {
+                        thinking: 'Analyzing telemetry patterns...',
+                        reasoning: [
+                            'Processing 50 million security events from multiple sources',
+                            'Identifying correlations between firewall logs, endpoint data, and API events',
+                            'Classifying threat patterns: 90% accurate detection of malicious IPs',
+                            'Establishing baseline behavior profiles for normal network activity',
+                            'Creating detection rules for common attack signatures',
+                            'Current alert reduction: 42% → 15% false positives'
+                        ]
+                    },
+                    TAA: {
+                        thinking: 'Learning threat patterns...',
+                        reasoning: [
+                            'Analyzing historical attack patterns from 6 months of data',
+                            'Identifying 127 unique threat signatures in datasets',
+                            'Mapping attack chains: Reconnaissance → Exploitation → Exfiltration',
+                            'Building threat timeline models for incident sequence prediction',
+                            'Correlating indicators of compromise (IoCs) across sources',
+                            'Foundation established for predictive models in Phase 2'
+                        ]
+                    },
+                    CRA: {
+                        thinking: 'Establishing compliance baseline...',
+                        reasoning: [
+                            'Auditing current compliance posture: 80% against PDP requirements',
+                            'Documenting data retention policies for 50M+ daily events',
+                            'Verifying access controls on Chronicle SIEM and BigQuery',
+                            'Establishing audit logging for all security operations',
+                            'Creating compliance templates for automated reporting',
+                            'Target compliance: 82% (achievable with Phase 1 controls)'
+                        ]
+                    }
+                }
+            },
+            {
+                name: 'Predictive Twin Fabric',
+                subtitle: 'Teaching the system to think ahead',
+                quarter: 'Q2',
+                theme: 'Threat Forecasting & Simulation',
+                description: 'Deploying digital twin environment and threat prediction models',
+                finalMetrics: { mttr: 12, falsePositives: 12, entropy: 0.7, compliance: 85 },
+                duration: 7000,
+                color: 'from-purple-600 to-pink-600',
+                primaryAgent: 'TAA',
+                processSteps: [
+                    { title: 'Digital Twin Creation', desc: 'Replicate production network in isolated sandbox environment' },
+                    { title: 'Attack Simulation', desc: 'Run 10,000+ attack scenarios against twin using MITRE ATT&CK framework' },
+                    { title: 'Prediction Model Training', desc: 'Train LLM on attack sequences to forecast next-stage threat moves' },
+                    { title: 'What-If Scenarios', desc: 'Generate response strategies for predicted attack paths' },
+                    { title: 'Response Optimization', desc: 'Compare response effectiveness across 1000s of scenario variations' },
+                    { title: 'Validation & Deployment', desc: 'Achieve 60% faster response time in real incidents' }
+                ],
+                agentReasonings: {
+                    ADA: {
+                        thinking: 'Testing response strategies...',
+                        reasoning: [
+                            'Simulating 5,000 attack scenarios in digital twin environment',
+                            'Testing response tactics: isolation, remediation, forensics',
+                            'Measuring response effectiveness for each scenario variation',
+                            'Identifying optimal response sequences that minimize damage',
+                            'Learning which countermeasures work best for different threats',
+                            'Ready to execute responses autonomously in Phase 3'
+                        ]
+                    },
+                    TAA: {
+                        thinking: 'Predicting threat evolution...',
+                        reasoning: [
+                            'Using LLM to analyze: "If attacker achieves X, next move is likely Y or Z"',
+                            'Building probabilistic threat trees for 50+ attack patterns',
+                            'Predicting attacker behavior with 78% accuracy',
+                            'Forecasting threat progression: Reconnaissance → Lateral movement → Exfiltration',
+                            'Creating early warning indicators for attack stage transitions',
+                            'Achieving 60% faster incident response through prediction'
+                        ]
+                    },
+                    CRA: {
+                        thinking: 'Validating response compliance...',
+                        reasoning: [
+                            'Checking: Can we execute this response without violating PDP?',
+                            'Verifying isolation procedures maintain audit trail requirements',
+                            'Ensuring remediation doesn\'t violate data residency rules',
+                            'Documenting response decisions for regulatory compliance',
+                            'Updating compliance templates based on scenario learnings',
+                            'Compliance improvement: 82% → 85%'
+                        ]
+                    }
+                }
+            },
+            {
+                name: 'Chronometric Simulation',
+                subtitle: 'Teaching the system to plan',
+                quarter: 'Q3',
+                theme: 'Time-Aware Autonomous Response',
+                description: 'Deploying reinforcement learning and autonomous response planning',
+                finalMetrics: { mttr: 8, falsePositives: 10, entropy: 0.6, compliance: 90 },
+                duration: 7000,
+                color: 'from-orange-600 to-red-600',
+                primaryAgent: 'ADA',
+                processSteps: [
+                    { title: 'Time-Series Modeling', desc: 'Build temporal threat models tracking attack progression over minutes/hours' },
+                    { title: 'Reinforcement Learning', desc: 'Train RL agents via 1 million simulated attack/response sequences' },
+                    { title: 'Autonomous Decision Making', desc: 'Deploy agents to make response decisions in milliseconds' },
+                    { title: 'Response Automation', desc: 'Automate containment, isolation, and remediation without human delay' },
+                    { title: 'Learning Loop', desc: 'Each incident teaches system optimal response for future similar attacks' },
+                    { title: 'Achievement', desc: 'Achieve sub-10-minute MTTR with 99% correct autonomous decisions' }
+                ],
+                agentReasonings: {
+                    ADA: {
+                        thinking: 'Executing autonomous response...',
+                        reasoning: [
+                            'Detected threat at T+0.5 sec using ML model from Phase 1',
+                            'Predicted threat path at T+1.2 sec using TAA predictions',
+                            'Selected optimal response at T+2.1 sec via RL model (1M simulations)',
+                            'Executed isolation at T+3.0 sec - no human approval needed',
+                            'Initiated remediation at T+4.2 sec in parallel with forensics',
+                            'Total MTTR: 8 minutes (vs 30 min baseline) - 73% improvement'
+                        ]
+                    },
+                    TAA: {
+                        thinking: 'Learning from incident...',
+                        reasoning: [
+                            'Analyzed incident: Attack used technique XYZ from MITRE ATT&CK',
+                            'Comparing: "Our RL model recommended response A, we chose A, outcome: success"',
+                            'Updating models: This attack-response pair now weights +0.15 confidence',
+                            'Generating insight: 87% of similar attacks stopped at isolation stage',
+                            'Sharing learning: Updated model deployed to TAA reasoning engine',
+                            'Each incident = 1 more data point training the prediction system'
+                        ]
+                    },
+                    CRA: {
+                        thinking: 'Automating compliant response...',
+                        reasoning: [
+                            'Verifying: All autonomous responses comply with PDP regulations',
+                            'Logging: Every decision, action, and outcome for audit trail',
+                            'Checking: Data handling during isolation complies with retention policy',
+                            'Validating: Remediation scripts don\'t access protected data illegally',
+                            'Recording: Full incident response for regulatory reporting',
+                            'Compliance: 90% (automated governance enforces every step)'
+                        ]
+                    }
+                }
+            },
+            {
+                name: 'Federated Trust Mesh',
+                subtitle: 'Teaching the system to collaborate',
+                quarter: 'Q4',
+                theme: 'Cross-Org Intelligence & Collective Defense',
+                description: 'Enabling federated learning and zero-trust architecture',
+                finalMetrics: { mttr: 8, falsePositives: 9, entropy: 0.6, compliance: 95 },
+                duration: 7000,
+                color: 'from-green-600 to-emerald-600',
+                primaryAgent: 'CRA',
+                processSteps: [
+                    { title: 'Federated Learning Setup', desc: 'Connect threat models with 5 trusted partner SOCs without sharing raw data' },
+                    { title: 'Model Aggregation', desc: 'LLM synthesizes insights from partner models to enhance collective intelligence' },
+                    { title: 'Privacy-Preserving Sharing', desc: 'Share attack patterns, IoCs, and threat signatures with differential privacy' },
+                    { title: 'Zero-Trust Enforcement', desc: 'Implement zero-trust across all inter-org communication channels' },
+                    { title: 'Compliance Verification', desc: 'Ensure all data sharing complies with PDP for all organizations' },
+                    { title: 'Collective Defense', desc: 'Threats blocked in partner network prevent attacks in our network' }
+                ],
+                agentReasonings: {
+                    ADA: {
+                        thinking: 'Contributing to collective defense...',
+                        reasoning: [
+                            'Shared with partners: "We blocked 147 attacks from IP range X.X.X.0/24 today"',
+                            'Received from partners: "These IPs are staging for attacks in region Y"',
+                            'Updated local rules: Block IP ranges based on collective intelligence',
+                            'Result: Attack stopped at perimeter using partner intelligence',
+                            'Contributing to collective defense network of 5 partners',
+                            'Combined threat visibility: 10x broader than single SOC'
+                        ]
+                    },
+                    TAA: {
+                        thinking: 'Synthesizing collective threat intelligence...',
+                        reasoning: [
+                            'Analyzing partner threat data (without raw data - privacy preserved)',
+                            'LLM synthesis: "Patterns from 5 orgs suggest coordinated campaign targeting sector Y"',
+                            'Aggregating models: Fed learning merges 5 threat prediction models',
+                            'Enhanced accuracy: 93% prediction accuracy (vs 78% single-org)',
+                            'Early warning: Detected threat stage 2 moves 3 days before our org would see them',
+                            'Collective intelligence advantage: Threats exposed across ecosystem'
+                        ]
+                    },
+                    CRA: {
+                        thinking: 'Governing federated ecosystem...',
+                        reasoning: [
+                            'Verifying: All shared data meets PDP requirements for 5+ jurisdictions',
+                            'Enforcing: Zero-trust authentication for every cross-org connection',
+                            'Monitoring: Each partner\'s data access and usage patterns',
+                            'Auditing: Complete trail of what data was shared with whom when',
+                            'Compliance check: 95%+ compliance across all partner organizations',
+                            'Trust validation: Every partner independently audited for compliance'
+                        ]
+                    }
+                }
+            }
+        ];
+
+        let currentPhaseIndex = 0;
+        let isAutoPlaying = true;
+        let currentMetrics = { mttr: 30, falsePositives: 42, entropy: 1.0, compliance: 80 };
+        let currentReasoningAgent = 'ADA';
+
+        const elements = {
+            toggleBtn: document.getElementById('toggleBtn'),
+            currentPhase: document.getElementById('currentPhase'),
+            quarterNum: document.getElementById('quarterNum'),
+            phaseName: document.getElementById('phaseName'),
+            phaseSubtitle: document.getElementById('phaseSubtitle'),
+            phaseDescription: document.getElementById('phaseDescription'),
+            phaseTheme: document.getElementById('phaseTheme'),
+            phaseContainer: document.getElementById('phaseContainer'),
+            mttr: document.getElementById('mttr'),
+            falsePos: document.getElementById('falsePos'),
+            entropy: document.getElementById('entropy'),
+            compliance: document.getElementById('compliance'),
+            mttrBar: document.getElementById('mttrBar'),
+            falsePosBar: document.getElementById('falsePosBar'),
+            entropyBar: document.getElementById('entropyBar'),
+            complianceBar: document.getElementById('complianceBar'),
+            reasoningContent: document.getElementById('reasoningContent'),
+            processFlow: document.getElementById('processFlow'),
+            phaseButtons: document.getElementById('phaseButtons'),
+            completionMessage: document.getElementById('completionMessage'),
+            progressPercent: document.getElementById('progressPercent'),
+            agentADA: document.getElementById('agentADA'),
+            agentTAA: document.getElementById('agentTAA'),
+            agentCRA: document.getElementById('agentCRA')
+        };
+
+        function updatePhaseDisplay() {
+            const phase = phases[currentPhaseIndex];
+            elements.phaseName.textContent = phase.name;
+            elements.phaseSubtitle.textContent = phase.subtitle;
+            elements.phaseDescription.textContent = phase.description;
+            elements.phaseTheme.textContent = phase.theme;
+            elements.currentPhase.textContent = currentPhaseIndex + 1;
+            elements.quarterNum.textContent = phase.quarter;
+            elements.phaseContainer.className = `rounded-xl p-6 bg-gradient-to-br ${phase.color}/10 border border-slate-600/30 phase-container relative overflow-hidden`;
+            updateProcessFlow();
+            updateAgentReasonings();
+            updatePhaseButtons();
+        }
+
+        function updateProcessFlow() {
+            const phase = phases[currentPhaseIndex];
+            elements.processFlow.innerHTML = phase.processSteps.map((step, idx) => `
+                <div class="process-step">
+                    <div class="step-number">${idx + 1}</div>
+                    <div class="step-content">
+                        <div class="step-title">${step.title}</div>
+                        <div class="step-description">${step.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateAgentReasonings() {
+            const phase = phases[currentPhaseIndex];
+            const agentData = phase.agentReasonings[currentReasoningAgent];
+            
+            elements.reasoningContent.innerHTML = `
+                <div class="agent-thinking">
+                    <div class="thinking-title">
+                        <span>🤖</span>
+                        <span>${currentReasoningAgent} Agent Processing:</span>
+                    </div>
+                    <div class="thinking-content">${agentData.thinking}</div>
+                </div>
+                <div class="space-y-2">
+                    ${agentData.reasoning.map((line, idx) => `
+                        <div class="data-flow">
+                            <span class="font-semibold text-cyan-400">[${idx + 1}]</span> ${line}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Update agent tabs
+            document.querySelectorAll('.agent-tab').forEach(tab => {
+                if (tab.dataset.agent === currentReasoningAgent) {
+                    tab.style.background = 'rgba(59, 130, 246, 0.3)';
+                    tab.style.color = 'rgba(96, 165, 250, 1)';
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                } else {
+                    tab.style.background = 'transparent';
+                    tab.style.color = 'rgba(148, 163, 184, 0.7)';
+                    tab.classList.remove('active');
+                    tab.setAttribute('aria-selected', 'false');
+                    tab.setAttribute('tabindex', '-1');
+                }
+            });
+        }
+
+        function updatePhaseButtons() {
+            elements.phaseButtons.innerHTML = phases.map((p, i) => `
+                <button onclick="jumpToPhase(${i})" 
+                        class="phase-button w-full px-3 py-2 rounded text-xs text-left transition font-semibold ${
+                    currentPhaseIndex === i
+                        ? 'bg-blue-600 text-white active'
+                        : currentPhaseIndex > i
+                        ? 'bg-slate-800 text-slate-400 line-through'
+                        : 'bg-slate-900 text-slate-400 hover:bg-slate-800'
+                }"
+                        role="tab"
+                        aria-selected="${currentPhaseIndex === i}"
+                        aria-label="Phase ${i + 1}: ${p.name}"
+                        tabindex="${currentPhaseIndex === i ? 0 : -1}">
+                    ${p.quarter}: ${p.name.split(' ')[0]}
+                </button>
+            `).join('');
+        }
+
+        function animateMetrics() {
+            const phase = phases[currentPhaseIndex];
+            const startTime = Date.now();
+            const startMetrics = { ...currentMetrics };
+
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / phase.duration, 1);
+
+                currentMetrics = {
+                    mttr: Math.round(startMetrics.mttr + (phase.finalMetrics.mttr - startMetrics.mttr) * progress),
+                    falsePositives: Math.round(startMetrics.falsePositives + (phase.finalMetrics.falsePositives - startMetrics.falsePositives) * progress),
+                    entropy: Math.round((startMetrics.entropy + (phase.finalMetrics.entropy - startMetrics.entropy) * progress) * 100) / 100,
+                    compliance: Math.round(startMetrics.compliance + (phase.finalMetrics.compliance - startMetrics.compliance) * progress)
+                };
+
+                updateMetricsDisplay();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else if (isAutoPlaying) {
+                    currentPhaseIndex++;
+                    if (currentPhaseIndex >= phases.length) {
+                        elements.completionMessage.classList.remove('hidden');
+                    } else {
+                        updatePhaseDisplay();
+                        animateMetrics();
+                    }
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
+        function updateMetricsDisplay() {
+            elements.mttr.textContent = currentMetrics.mttr;
+            elements.falsePos.textContent = currentMetrics.falsePositives;
+            elements.entropy.textContent = currentMetrics.entropy;
+            elements.compliance.textContent = currentMetrics.compliance;
+
+            const mttrWidth = ((30 - currentMetrics.mttr) / 30 * 100);
+            const falsePosWidth = ((42 - currentMetrics.falsePositives) / 42 * 100);
+            const entropyWidth = ((1.0 - currentMetrics.entropy) / 1.0 * 100);
+            const complianceWidth = (currentMetrics.compliance / 100 * 100);
+
+            elements.mttrBar.style.width = mttrWidth + '%';
+            elements.mttrBar.setAttribute('aria-valuenow', currentMetrics.mttr);
+            
+            elements.falsePosBar.style.width = falsePosWidth + '%';
+            elements.falsePosBar.setAttribute('aria-valuenow', currentMetrics.falsePositives);
+            
+            elements.entropyBar.style.width = entropyWidth + '%';
+            elements.entropyBar.setAttribute('aria-valuenow', Math.round((1.0 - currentMetrics.entropy) * 100));
+            
+            elements.complianceBar.style.width = complianceWidth + '%';
+            elements.complianceBar.setAttribute('aria-valuenow', currentMetrics.compliance);
+
+            elements.progressPercent.textContent = Math.round(((currentPhaseIndex) / phases.length) * 100);
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            if (Math.random() > 0.7) {
+                const particle = document.createElement('div');
+                particle.className = 'absolute w-1 h-1 bg-cyan-400 rounded-full particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = Math.random() * 1 + 1 + 's';
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        function jumpToPhase(index) {
+            currentPhaseIndex = index;
+            isAutoPlaying = false;
+            currentReasoningAgent = phases[index].primaryAgent;
+            elements.toggleBtn.textContent = '▶ Play';
+            elements.toggleBtn.className = 'px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition';
+            updatePhaseDisplay();
+            animateMetrics();
+        }
+
+        // Event Listeners
+        elements.toggleBtn.addEventListener('click', () => {
+            isAutoPlaying = !isAutoPlaying;
+            if (isAutoPlaying) {
+                elements.toggleBtn.textContent = '⏸ Pause';
+                elements.toggleBtn.className = 'px-6 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl';
+                elements.toggleBtn.setAttribute('aria-pressed', 'true');
+                if (currentPhaseIndex >= phases.length) {
+                    currentPhaseIndex = 0;
+                    currentMetrics = { mttr: 30, falsePositives: 42, entropy: 1.0, compliance: 80 };
+                    elements.completionMessage.classList.add('hidden');
+                }
+                animateMetrics();
+            } else {
+                elements.toggleBtn.textContent = '▶ Play';
+                elements.toggleBtn.className = 'px-6 py-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl';
+                elements.toggleBtn.setAttribute('aria-pressed', 'false');
+            }
+        });
+
+        // Agent tab switching
+        document.querySelectorAll('.agent-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentReasoningAgent = tab.dataset.agent;
+                updateAgentReasonings();
+            });
+            tab.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    currentReasoningAgent = tab.dataset.agent;
+                    updateAgentReasonings();
+                }
+            });
+        });
+
+        // Keyboard navigation for phase buttons
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentPhaseIndex > 0) {
+                jumpToPhase(currentPhaseIndex - 1);
+            } else if (e.key === 'ArrowRight' && currentPhaseIndex < phases.length - 1) {
+                jumpToPhase(currentPhaseIndex + 1);
+            } else if (e.key === ' ' || e.key === 'Enter') {
+                if (document.activeElement === elements.toggleBtn) {
+                    e.preventDefault();
+                    elements.toggleBtn.click();
+                }
+            }
+        });
+
+        // Initialize
+        updatePhaseDisplay();
+        setInterval(createParticles, 200);
+
+        // Start
+        animateMetrics();
+    </script>
+</body>
+</html>
